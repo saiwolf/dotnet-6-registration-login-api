@@ -93,6 +93,7 @@ try
         // configure DI for application services
         services.AddScoped<IJwtUtils, JwtUtils>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IEmailService, EmailService>();
     }
 
     WebApplication app = builder.Build();

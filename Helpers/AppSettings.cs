@@ -1,5 +1,3 @@
-using MailKit.Security;
-
 namespace WebApi.Helpers;
 
 public class AppSettings
@@ -16,5 +14,6 @@ public class EmailSettings
     public string Password { get; set; }
     public bool SmtpAuthRequired { get; set; }
     public int Port { get; set; }
-    public SecureSocketOptions SecureSocketOptions { get; set; }
+    public string SmtpFrom { get; set; }
+    public string SecureSocketOptions { get; set; }
 }
