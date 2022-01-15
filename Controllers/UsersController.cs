@@ -29,17 +29,17 @@ public class UsersController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("authenticate")]
-    public IActionResult Authenticate(AuthenticateRequest model)
+    public async Task<IActionResult> Authenticate(AuthenticateRequest model)
     {
-        var response = _userService.Authenticate(model);
+        AuthenticateResponse response = await _userService.Authenticate(model);
         return Ok(response);
     }
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public IActionResult Register(RegisterRequest model)
+    public async Task<IActionResult> Register(RegisterRequest model)
     {
-        _userService.Register(model);
+        await _userService.Register(model);
         return Ok(new { message = "Registration successful" });
     }
 
@@ -51,23 +51,23 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    public async Task<IActionResult> GetByIdAsync(Guid id)
     {
-        var user = _userService.GetById(id);
+        var user = await _userService.GetById(id);
         return Ok(user);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, UpdateRequest model)
+    public async Task<IActionResult> UpdateAsync(Guid id, UpdateRequest model)
     {
-        _userService.Update(id, model);
+        await _userService.Update(id, model);
         return Ok(new { message = "User updated successfully" });
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        _userService.Delete(id);
+        await _userService.Delete(id);
         return Ok(new { message = "User deleted successfully" });
     }
 }

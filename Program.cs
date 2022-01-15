@@ -23,12 +23,8 @@ try
     {
         IServiceCollection services = builder.Services;
         IWebHostEnvironment env = builder.Environment;
-
-        // use sql server db in production and sqlite db in development
-        if (env.IsProduction())
-            services.AddDbContext<DataContext>();
-        else
-            services.AddDbContext<DataContext, SqliteDataContext>();
+        
+        services.AddDbContext<DataContext>();
 
         services.AddCors();
         services.AddControllers();
@@ -56,6 +52,31 @@ try
                         Name = "MIT",
                         Url = new Uri("https://opensource.org/licenses/MIT")
                     },
+                });
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization using the Bearer scheme."
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
                 });
 
                 string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
