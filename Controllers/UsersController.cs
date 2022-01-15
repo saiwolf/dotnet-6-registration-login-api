@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using WebApi.Authorization;
 using WebApi.Helpers;
+using WebApi.Models.Emails;
 using WebApi.Models.Users;
 using WebApi.Services;
 
@@ -13,18 +14,18 @@ using WebApi.Services;
 [Route("[controller]")]
 public class UsersController : ControllerBase
 {
+    private readonly IEmailService _emailService;
+    private readonly ILogger<UsersController> _logger;    
     private IUserService _userService;
-    private IMapper _mapper;
-    private readonly AppSettings _appSettings;
 
     public UsersController(
-        IUserService userService,
-        IMapper mapper,
-        IOptions<AppSettings> appSettings)
+        IEmailService emailService,
+        ILogger<UsersController> logger,
+        IUserService userService)
     {
+        _emailService = emailService;
+        _logger = logger;
         _userService = userService;
-        _mapper = mapper;
-        _appSettings = appSettings.Value;
     }
 
     [AllowAnonymous]
@@ -40,7 +41,16 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Register(RegisterRequest model)
     {
         await _userService.Register(model);
-        return Ok(new { message = "Registration successful" });
+        var userToEmail = new Addressee
+        {
+            Name = $"{model.FirstName} {model.LastName}",
+            Email = model.Email,
+        };
+        string subject = "Welcome to the User API!";
+        string body = "Thank you for signing up!";
+        var message = _emailService.Compose(userToEmail, subject, body, null);
+        await _emailService.SendAsync(message);
+        return Ok(new { message = "Registration successful! Check your email!" });
     }
 
     [HttpGet]
