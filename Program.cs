@@ -49,8 +49,8 @@ try
                     },
                     License = new OpenApiLicense
                     {
-                        Name = "MIT",
-                        Url = new Uri("https://opensource.org/licenses/MIT")
+                        Name = "Licensed under the MIT License",
+                        Url = new Uri("https://github.com/saiwolf/dotnet-6-registration-login-api/blob/main/LICENSE")
                     },
                 });
 
